@@ -2,40 +2,72 @@
   <loginTemplate>
     <h2>Login</h2>
     <span slot="menuesquerdo">
-        <ul>
-            <li>Item 1 </li>
-            <li>Item 2 </li>
-        </ul>    
-    </span>    
+      <img
+        src="https://png.pngtree.com/png-vector/20191003/ourmid/pngtree-user-login-or-authenticate-icon-on-gray-background-flat-icon-ve-png-image_1786166.jpg"
+        alt=""
+        class="circle responsive-img"
+      />
+    </span>
     <span slot="principal">
-      <input type="text" placeholder="E-mail" value="" />
-      <input type="password" placeholder="Senha" value="" />
-      <button type="button" class="btn">Entrar</button>
+      <span>
+        <h4>Login</h4>
+        <input type="text" placeholder="E-mail" v-model="email"/>
+        <input type="password" placeholder="Senha" v-model="password" />
+        <button v-on:click="login" class="btn">Entrar</button>
+        <router-link to="/cadastro" class="btn orange">Cadastre-se</router-link>
+      </span>
     </span>
   </loginTemplate>
-
-
-
 </template>
 
 <script>
-import publicarConteudo from "@/components/social/publicarConteudo";
-import cartaoConteudo from "@/components/social/cartaoConteudo";
-import cartaoDetalhe from "@/components/social/cartaoDetalhe";
-import grade from "@/components/layout/grade";
 import loginTemplate from "@/templates/loginTemplate";
+import axios from "axios";
 
 export default {
   name: "Login",
   data() {
-    return {};
+    return {
+      email:'',
+      password:''
+    };
   },
   components: {
-    cartaoConteudo,
-    cartaoDetalhe,
-    grade,
-    publicarConteudo,
     loginTemplate,
+  },
+  methods: {
+    login() {
+      axios
+        .post('http://127.0.0.1:8000/api/login', {
+          email: this.email,
+          password: this.password
+        })
+        .then((response) => {
+          // console.log(response);
+          if(response.data.token){
+            console.log('Login com sucesso');
+            //Criar sessão que pegue um item json e transforme em string.
+            sessionStorage.setItem('usuario',JSON.stringify(response.data));
+            this.$router.push('/');
+
+          }
+          else if(response.data.status == false){ 
+           console.log('Login não existe');
+           alert('Login inválido!');   
+          }
+          else{
+            console.log('Erro na validação');
+            let erros ='';
+            for(let erro of Object.values(response.data)){
+              erros += erro + ' ';
+            }
+            alert(erros);
+          }
+        })
+        .catch((e) => {
+          
+        });
+    },
   },
 };
 </script>

@@ -3,16 +3,12 @@
     <span slot="menuesquerdo">
          <div class="row valign-wrapper">
             <grade tamanho="4">
-              <img
-                src="https://developers.google.com/web/images/contributors/no-photo.jpg"
-                alt=""
-                class="circle responsive-img"
-              />
+              <img :src="usuario.imagem" :alt="usuario.name" class="circle responsive-img"/>
               <!-- notice the "circle" class -->
             </grade>
             <grade tamanho="8">
               <span class="black-text">
-                <h5>Iago Barbosa</h5>
+                <h5>{{usuario.name}}</h5>
                 Developer
               </span>
             </grade>
@@ -22,8 +18,8 @@
        <publicarConteudo/>
   
     <cartaoConteudo
-      perfil="https://developers.google.com/web/images/contributors/no-photo.jpg"
-      nome="Iago Barbosa"
+      :perfil="usuario.imagem"
+      :nome="usuario.name"
       data="05/03/2021">
     
       <cartaoDetalhe
@@ -48,8 +44,15 @@ export default {
   name: "Home",
   data() {
     return {
-      msg: "Estudando Vue.js",
+      usuario: false
     };
+  },
+   created() {
+    let usuarioAux = sessionStorage.getItem("usuario");
+    if (usuarioAux) {
+      this.usuario = JSON.parse(usuarioAux);
+  
+    }
   },
   components: {
     cartaoConteudo,

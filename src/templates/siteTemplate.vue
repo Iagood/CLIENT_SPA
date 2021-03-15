@@ -1,9 +1,11 @@
 <template>
   <span>
     <header>
-      <navbar url="#/" cor="teal darken-2" logo="Social">
-          <li><a href="#/">Home</a></li>
-          <li><a href="#/login">Entrar</a></li>
+      <navbar url="/" cor="teal darken-2" logo="Social">
+          <li ><router-link to="/">Home</router-link></li>
+          <li v-if="usuario == false"><router-link to="/login">Entrar</router-link></li>
+          <li v-if="usuario"><router-link to="/perfil">{{usuario.name}}</router-link></li>
+          <li v-if="usuario"><a v-on:click="sair()" to="/login">Sair</a></li>
       </navbar>
     </header>
     <main>
@@ -14,7 +16,7 @@
                   <slot name="menuesquerdo"/>
               </cartaomenu>
               <cartaomenu>
-                <h3>Teste</h3>
+               
               </cartaomenu>  
           </grade>
           <grade tamanho="8">
@@ -23,7 +25,7 @@
         </div>
       </div>
     </main>
-    <rodape cor="teal darken-2" logo="Social" descricao="Teste de descricao" ano="2021">
+    <rodape style="position:absolut;bottom:0;widht:100%" cor="teal darken-2" logo="Social" descricao="Teste de descricao" ano="2021">
       <li><a class="grey-text text-lighten-3" href="#!">Home</a></li>
       <li><a class="grey-text text-lighten-3" href="#!">Link 2</a></li>
       <li><a class="grey-text text-lighten-3" href="#!">Link 3</a></li>
@@ -49,6 +51,26 @@ export default {
     cartaomenu,
     cartaoConteudo
   },
+  data(){
+    return{
+      usuario: false
+    }
+  },
+  created(){
+    let usuarioAux = sessionStorage.getItem('usuario');
+    if(usuarioAux){
+       this.usuario = JSON.parse(usuarioAux);
+    }else{
+      this.$router.push('/login');
+    }
+  },
+  methods:{
+    sair(){
+      sessionStorage.clear();
+      this.usuario = false;
+      this.$router.push('/login');
+    }
+  }
 };
 </script>
 

@@ -1,16 +1,25 @@
 <template>
   <span>
     <header>
-      <navbar cor="teal darken-2" logo="Social" />
+      <navbar cor="teal darken-2" url="/" logo="Social">
+          <li v-if="usuario"><router-link to="/">Home</router-link></li>
+          <li v-if="!usuario"><router-link to="/login">Entrar</router-link></li>
+          <li v-if="!usuario"><router-link to="/cadastro">Cadastre-se</router-link></li>
+          <li v-if="usuario"><router-link to="/perfil">{{usuario.name}}</router-link></li>
+          <li v-if="usuario"><a v-on:click="sair()" to="/login">Sair</a></li>
+      </navbar>
     </header>
     <main>
       <div class="container">
         <div class="row">
-          <grade tamanho="6">
+          <grade tamanho="8">
               <slot name="menuesquerdo"/>
+              <cartaomenu>
+                <h4>...</h4>
+              </cartaomenu> 
               
           </grade>
-          <grade tamanho="6">
+          <grade tamanho="4">
            <slot name="principal"/>
           </grade>
         </div>
@@ -35,6 +44,11 @@ import cartaoConteudo from "@/components/social/cartaoConteudo";
 
 export default {
   name: "loginTemplate",
+  data(){
+    return {
+      usuario:false
+    }
+  },
   components: {
     navbar,
     rodape,
@@ -42,6 +56,20 @@ export default {
     cartaomenu,
     cartaoConteudo
   },
+  created(){
+    let usuarioAux = sessionStorage.getItem('usuario');
+    if (usuarioAux){
+      this.usuario = JSON.parse(usuarioAux);
+      this.$router.push('/');
+    }
+  },
+  methods:{
+    sair(){
+      sessionStorage.clear();
+      this.usuario = false;
+    }
+  }
+
 };
 </script>
 

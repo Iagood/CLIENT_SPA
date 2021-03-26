@@ -43,7 +43,7 @@
 
 <script>
 import siteTemplate from "@/templates/siteTemplate";
-import axios from "axios";
+
 
 export default {
   name: "Perfil",
@@ -68,15 +68,13 @@ export default {
         var reader = new FileReader();
 
         reader.onload = (e) => {
-          this.imageSrc = e.target.result;
+        this.imageSrc = e.target.result;
         };
       }
       reader.readAsDataURL(file);
     },
     perfil() {
-      axios
-        .put(
-          "http://127.0.0.1:8000/api/perfil",
+      this.$http.put("http://127.0.0.1:8000/api/perfil",
           {
             name: this.name,
             email: this.email,
@@ -84,21 +82,22 @@ export default {
             password: this.password,
             password_confirmation: this.password_confirmation,
           },
-          { headers: { authorization: "Bearer " + this.usuario.token } }
+          { headers: { authorization: "Bearer " + this.$store.getters.getToken } }
         )
         .then((response) => {
           console.log(response);
-          if (response.data.token) {
+          if (response.data.status) {
             console.log(response.data);
-            this.usuario = response.data;
+            this.usuario = response.data.usuario;
+            this.$store.commit('setUsuario',response.data.usuario)
             sessionStorage.setItem("usuario", JSON.stringify(this.usuario));
             alert("Perfil atualizado!");
           } else if (response.data.status == false) {
             alert("Erro,tente novamente mais tarde!");
-          } else {
-            console.log("Erro na validação");
+          } else if(response.data.status== false && response.data.validacao) {
+            // console.log("Erro na validação");
             let erros = "";
-            for (let erro of Object.values(response.data)) {
+            for (let erro of Object.values(response.data.erros)) {
               erros += erro + " ";
             }
             alert(erros);
@@ -108,9 +107,9 @@ export default {
     },
   },
   created() {
-    let usuarioAux = sessionStorage.getItem("usuario");
+    let usuarioAux = this.$store.getters.getUsuario;
     if (usuarioAux) {
-      this.usuario = JSON.parse(usuarioAux);
+      this.usuario = this.$store.getters.getUsuario;
       this.name = this.usuario.name;
       this.email = this.usuario.email;
     }

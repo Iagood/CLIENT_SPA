@@ -1,21 +1,33 @@
 <template>
-  <span>
-    <div v-if="img" class="card-image">
-      <img :src="img"/>
-      <span class="card-title">{{titulo || 'Título genérico' }}</span>
-    </div>
 
-    <div v-if="txt" class="card-content">
-      <p>{{txt}}</p>
-    </div>
-  </span>
+<span>
+  <div v-if="img && img != '#'" class="card-image">
+    <a v-if="link && link != '#'" :href="link" target="_blank">
+      <img  :src="img">
+      <span class="card-title">{{titulo || ''}}</span>
+    </a>
+    <span v-if="!link || link == '#'">
+      <img  :src="img">
+      <span class="card-title">{{titulo || ''}}</span>
+    </span>
+  </div>
+
+  <div class="card-content">
+    <span v-if="!img || img == '#'">
+      <span class="card-title">{{titulo || ''}}</span>
+    </span>
+    <p>{{txt}}</p>
+    <p v-if="link && link != '#'"><a :href="link" target="_blank">Confira mais aqui...</a></p>
+  </div>
+</span>
+
+
 </template>
-
 <script>
 
 export default {
   name: "cartaoDetalhe",
-  props: ['img','titulo','txt'],
+  props: ['img','titulo','txt','link'],
   data() {
     return {};
   },

@@ -12,25 +12,25 @@
     <main>
       <div class="container">
         <div class="row">
-          <grade tamanho="8">
+          <!-- <grade tamanho="8">
               <slot name="menuesquerdo"/>
               <cartaomenu>
-                <h4>...</h4>
+                <h4>SPA utilizando Vue.js e Laravel.</h4>
               </cartaomenu> 
               
-          </grade>
+          </grade> -->
           <grade tamanho="4">
            <slot name="principal"/>
           </grade>
         </div>
       </div>
     </main>
-    <rodape cor="teal darken-2" logo="Social" descricao="Teste de descricao" ano="2021">
+    <!-- <rodape cor="teal darken-2" logo="Social" descricao="Teste de descricao" ano="2021">
       <li><a class="grey-text text-lighten-3" href="#!">Home</a></li>
       <li><a class="grey-text text-lighten-3" href="#!">Link 2</a></li>
       <li><a class="grey-text text-lighten-3" href="#!">Link 3</a></li>
       <li><a class="grey-text text-lighten-3" href="#!">Link 4</a></li>
-    </rodape>
+    </rodape> -->
   </span>
 </template>
 
@@ -57,21 +57,28 @@ export default {
     cartaoConteudo
   },
   created(){
-    let usuarioAux = sessionStorage.getItem('usuario');
+    let usuarioAux = this.$store.getters.getUsuario;
     if (usuarioAux){
-      this.usuario = JSON.parse(usuarioAux);
+      this.usuario = this.$store.getters.getUsuario;
       this.$router.push('/');
     }
   },
   methods:{
-    sair(){
-      sessionStorage.clear();
-      this.usuario = false;
-    }
+   
   }
 
 };
 </script>
 
 <style>
+h4{
+  color:rgb(5, 4, 4);
+  font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+}
+cartaomenu{
+  text-align: center;
+}
+body{
+  background-color: rgb(255, 255, 255);
+}
 </style>

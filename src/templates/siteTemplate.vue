@@ -25,8 +25,8 @@
         </div>
       </div>
     </main>
-    <rodape style="position:absolut;bottom:0;widht:100%" cor="teal darken-2" logo="Social" descricao="Teste de descricao" ano="2021">
-      <li><a class="grey-text text-lighten-3" href="#!">Home</a></li>
+    <rodape style="position:absolut;bottom:0;widht:100%" cor="teal darken-2" logo="Social" descricao="SPA utilizando Vue.js e Laravel" ano="2021">
+      <li ><router-link to="/">Home</router-link></li>
       <li><a class="grey-text text-lighten-3" href="#!">Link 2</a></li>
       <li><a class="grey-text text-lighten-3" href="#!">Link 3</a></li>
       <li><a class="grey-text text-lighten-3" href="#!">Link 4</a></li>
@@ -57,15 +57,16 @@ export default {
     }
   },
   created(){
-    let usuarioAux = sessionStorage.getItem('usuario');
+    let usuarioAux = this.$store.getters.getUsuario;
     if(usuarioAux){
-       this.usuario = JSON.parse(usuarioAux);
+       this.usuario = this.$store.getters.getUsuario;
     }else{
       this.$router.push('/login');
     }
   },
   methods:{
     sair(){
+      this.$store.commit('setUsuario',null);
       sessionStorage.clear();
       this.usuario = false;
       this.$router.push('/login');
@@ -75,4 +76,7 @@ export default {
 </script>
 
 <style>
+body{
+  background-color: rgb(255, 255, 255);
+}
 </style>

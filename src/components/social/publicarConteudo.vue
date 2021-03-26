@@ -2,12 +2,14 @@
     <span>
         <div class="row">
             <grade class="input-field" tamanho="12">
-            <textarea v-model="conteudo" id="conteudo" class="materialize-textarea"></textarea>
-            <label for="conteudo">O que está acontecendo?</label>
+            <input id="titulo" type="text" v-model="conteudo.titulo">
+            <textarea v-if="conteudo.titulo" placeholder="Conteúdo" v-model="conteudo.texto" id="conteudo" class="materialize-textarea"></textarea>
+            <input v-if="conteudo.titulo && conteudo.texto" type="text" placeholder="Link" v-model="conteudo.link"> 
+            <input v-if="conteudo.titulo && conteudo.texto" type="text" placeholder="Url da imagem" v-model="conteudo.imagem"> 
+            <label for="titulo">O que está acontecendo?</label>
             </grade>
-            <p>
-            <grade v-if="conteudo" class="btn waves-effect waves-light" tamanho="2 offset-s10"
-                >Publicar</grade>
+            <p class="right-align">
+            <button @click="addConteudo" v-if="conteudo.titulo && conteudo.texto" class="btn waves-effect waves-light" >Publicar</button>
             </p>
         </div>
     </span>
@@ -20,13 +22,41 @@ export default {
   props: [],
   data() {
     return {
-        conteudo:''
+        conteudo:{titulo:'',texto:'',link:'',imagem:''}
     };
   },
   components: {
     grade,
   },
-};
+  methods:{
+    addConteudo(){
+      this.$http.post(this.$urlAPI+'conteudo/adicionar',
+      { titulo:this.conteudo.titulo,
+       texto:this.conteudo.texto, 
+       link:this.conteudo.link, 
+       imagem:this.conteudo.imagem
+      },
+      {headers: { authorization: "Bearer " + this.$store.getters.getToken }} )
+      .then(response => {
+        if(response.data.status){
+          console.log(response.data.conteudos);
+          this.conteudo ={titulo:'',texto:'',link:'',imagem:''}
+          document.location.reload(true);
+        }
+       else if (response.data.status == false && response.data.validacao) {
+          console.log("Erro na validação");
+          let erros = "";
+          for (let erro of Object.values(response.data.erros)) {
+            erros += erro + " ";
+          }
+          alert(erros);
+        } 
+      }).catch((e) => {
+          alert(e);
+      })
+    }  
+  }
+}
 </script>
 
 <!-- Estilo da página -->
